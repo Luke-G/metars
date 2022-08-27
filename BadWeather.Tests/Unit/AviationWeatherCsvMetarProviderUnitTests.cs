@@ -8,7 +8,7 @@ using Moq;
 using Moq.Protected;
 using Xunit;
 
-namespace BadWeather.Tests;
+namespace BadWeather.Tests.Unit;
 
 public class AviationWeatherCsvMetarProviderUnitTests
 {
