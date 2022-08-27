@@ -18,7 +18,7 @@ public class MetarsController : ControllerBase
     }
 
     [HttpGet("gust")]
-    public async Task<ActionResult<IEnumerable<Metar>>> GetTop20Gusts()
+    public async Task<ActionResult<List<Metar>>> GetTop20Gusts()
     {
         IList<Metar> metars = await _metarProvider.RetrieveMetars();
 
@@ -26,6 +26,6 @@ public class MetarsController : ControllerBase
             .OrderByDescending(q => q.WindGustKnots)
             .Take(20);
 
-        return Ok(highestGustMetars);
+        return Ok(highestGustMetars.ToList());
     }
 }
