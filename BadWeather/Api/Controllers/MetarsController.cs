@@ -5,20 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace BadWeather.Api.Controllers;
 
 [ApiController]
-[Route("api")]
-public class ApiController : ControllerBase
+[Route("metars")]
+public class MetarsController : ControllerBase
 {
-    private readonly ILogger<ApiController> _logger;
+    private readonly ILogger<MetarsController> _logger;
     private readonly IMetarProvider _metarProvider;
 
-    public ApiController(ILogger<ApiController> logger, IMetarProvider metarProvider)
+    public MetarsController(ILogger<MetarsController> logger, IMetarProvider metarProvider)
     {
         _logger = logger;
         _metarProvider = metarProvider;
     }
 
     [HttpGet("gust")]
-    public async Task<ActionResult<IEnumerable<Metar>>> GetHighestGustMetars()
+    public async Task<ActionResult<IEnumerable<Metar>>> GetTop20Gusts()
     {
         IList<Metar> metars = await _metarProvider.RetrieveMetars();
 
