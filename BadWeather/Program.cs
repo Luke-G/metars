@@ -42,6 +42,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+// Setup the target host - for Google Cloud Run compatibility
+string port = Environment.GetEnvironmentVariable("PORT") ?? "7175";
+string scheme = port == "7175" ? "https" : "http";
+var url = $"{scheme}://0.0.0.0:{port}";
+
+app.Run(url);
 
 public partial class Program { }
