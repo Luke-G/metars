@@ -19,4 +19,8 @@
       <Folder Include="Application\Services" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="BadWeather.Tests" />
+    </ItemGroup>
+
 </Project>

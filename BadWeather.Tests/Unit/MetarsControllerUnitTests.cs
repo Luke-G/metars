@@ -1,6 +1,7 @@
 ﻿using BadWeather.Api.Controllers;
 using BadWeather.Application.Contracts;
 using BadWeather.Domain.Models;
+using BadWeather.Tests.Mocks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,30 +21,8 @@ public class MetarsControllerUnitTests
 
         mockMetarProvider
             .Setup(m => m.RetrieveMetars())
-            .ReturnsAsync(new List<Metar>
-            {
-                new Metar
-                {
-                    StationIcao = "EGCC",
-                    WindGustKnots = 24,
-                },
-                new Metar
-                {
-                    StationIcao = "EGNT",
-                    WindGustKnots = 9,
-                },
-                new Metar
-                {
-                    StationIcao = "YMEN",
-                    WindGustKnots = 32,
-                },
-                new Metar
-                {
-                    StationIcao = "YMML",
-                    WindGustKnots = 2,
-                },
-            });
-        
+            .ReturnsAsync(MockMetarProvider.GetMockMetars());
+
         _sut = new MetarsController(mockLogger.Object, mockMetarProvider.Object);
     }
 
