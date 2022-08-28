@@ -1,5 +1,6 @@
 ﻿using BadWeather.Api.Controllers;
 using BadWeather.Application.Contracts;
+using BadWeather.Application.Services;
 using BadWeather.Domain.Models;
 using BadWeather.Tests.Mocks;
 using FluentAssertions;
@@ -16,18 +17,19 @@ public class MetarsControllerUnitTests
     
     public MetarsControllerUnitTests()
     {
-        var mockLogger = new Mock<ILogger<MetarsController>>();
         var mockMetarProvider = new MockMetarProvider();
+        var metarService = new MetarService(mockMetarProvider.Object);
 
-        _sut = new MetarsController(mockLogger.Object, mockMetarProvider.Object);
+        _sut = new MetarsController(metarService);
     }
 
     [Fact]
     public async Task CanGetTopGustsInOrder()
     {
-        ActionResult<List<Metar>> contentResult = await _sut.GetTop20Gusts();
+        ActionResult<List<Metar>> contentResult = await _sut.GetTop20Gusts("Y");
         
-        var metars = (List<Metar>)((OkObjectResult)contentResult.Result!).Value!;
+        var metars = (IEnumerable<Metar>)((OkObjectResult)contentResult.Result!).Value!;
+        metars = metars.ToList();
 
         metars.First().StationIcao.Should().Be("YMEN");
         metars.First().WindGustKnots.Should().Be(32);

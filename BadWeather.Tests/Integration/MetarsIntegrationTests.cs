@@ -20,7 +20,7 @@ public class MetarsIntegrationTests
     {
         var client = _factory.CreateClient();
 
-        var response = await client.GetAsync("/metars/gust");
+        var response = await client.GetAsync("/metars/gust?icaoPrefix=Y");
 
         response.EnsureSuccessStatusCode();
         response.Content.Headers.ContentType!.ToString().Should().Be("application/json; charset=utf-8");
