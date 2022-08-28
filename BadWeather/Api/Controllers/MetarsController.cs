@@ -1,4 +1,5 @@
 using BadWeather.Application.Contracts;
+using BadWeather.Application.Filters;
 using BadWeather.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,50 +9,58 @@ namespace BadWeather.Api.Controllers;
 [Route("metars")]
 public class MetarsController : ControllerBase
 {
-    private readonly IMetarProvider _metarProvider;
+    private readonly IMetarService _metarService;
 
-    public MetarsController(IMetarProvider metarProvider)
+    public MetarsController(IMetarService metarService)
     {
-        _metarProvider = metarProvider;
+        _metarService = metarService;
     }
 
     [HttpGet("gust")]
     public async Task<ActionResult<List<Metar>>> GetTop20Gusts([FromQuery] string icaoPrefix)
     {
-        IList<Metar> allMetars = await _metarProvider.RetrieveMetars();
+        IEnumerable<Metar> metars = await _metarService.GetHighestGusts();
 
-        IEnumerable<Metar> metars = allMetars
-            .OrderByDescending(q => q.WindGustKnots)
-            .Where(q => q.StationIcao.StartsWith(icaoPrefix.ToUpperInvariant()))
+        IEnumerable<Metar> result = metars
+            .FilterByIcaoPrefix(icaoPrefix)
             .Take(20);
 
-        return Ok(metars.ToList());
+        return Ok(result);
     }
     
     [HttpGet("wind")]
     public async Task<ActionResult<List<Metar>>> GetTop20Wind([FromQuery] string icaoPrefix)
     {
-        IList<Metar> allMetars = await _metarProvider.RetrieveMetars();
+        IEnumerable<Metar> metars = await _metarService.GetHighestWinds();
 
-        IEnumerable<Metar> metars = allMetars
-            .OrderByDescending(q => q.WindSpeedKnots)
-            .Where(q => q.StationIcao.StartsWith(icaoPrefix.ToUpperInvariant()))
+        IEnumerable<Metar> result = metars
+            .FilterByIcaoPrefix(icaoPrefix)
             .Take(20);
 
-        return Ok(metars.ToList());
+        return Ok(result);
     }
     
     [HttpGet("lowvisibility")]
     public async Task<ActionResult<List<Metar>>> GetTop20LowVisibility([FromQuery] string icaoPrefix)
     {
-        IList<Metar> allMetars = await _metarProvider.RetrieveMetars();
+        IEnumerable<Metar> metars = await _metarService.GetLowestVisibility();
 
-        IEnumerable<Metar> metars = allMetars
-            .Where(q => q.Visibility != null)
-            .Where(q => q.StationIcao.StartsWith(icaoPrefix.ToUpperInvariant()))
-            .OrderBy(q => q.Visibility)
+        IEnumerable<Metar> result = metars
+            .FilterByIcaoPrefix(icaoPrefix)
             .Take(20);
 
-        return Ok(metars.ToList());
+        return Ok(result);
+    }
+    
+    [HttpGet("storms")]
+    public async Task<ActionResult<List<Metar>>> GetTop20Storms([FromQuery] string icaoPrefix)
+    {
+        IEnumerable<Metar> metars = await _metarService.GetStorms();
+
+        IEnumerable<Metar> result = metars
+            .FilterByIcaoPrefix(icaoPrefix)
+            .Take(20);
+
+        return Ok(result);
     }
 }

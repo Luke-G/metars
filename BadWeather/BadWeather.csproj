@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <Folder Include="Api" />
-      <Folder Include="Application\Filters" />
       <Folder Include="Application\Mappings" />
     </ItemGroup>
 
