@@ -1,9 +1,8 @@
-﻿using BadWeather.Domain.Models;
-using CsvHelper.Configuration;
+﻿using CsvHelper.Configuration;
 
-namespace BadWeather.Infrastructure.Metars;
+namespace BadWeather.Infrastructure.Metars.AviationWeather;
 
-public sealed class MetarCsvClassMap : ClassMap<Metar>
+public sealed class MetarCsvClassMap : ClassMap<AviationWeatherCsvMetar>
 {
     public MetarCsvClassMap()
     {

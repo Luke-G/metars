@@ -1,26 +1,31 @@
 ﻿using System.Globalization;
 using System.IO.Compression;
+using AutoMapper;
 using BadWeather.Application.Contracts;
 using CsvHelper;
 using BadWeather.Domain.Models;
 
-namespace BadWeather.Infrastructure.Metars;
+namespace BadWeather.Infrastructure.Metars.AviationWeather;
 
 public class AviationWeatherCsvMetarProvider : IMetarProvider
 {
+    private readonly IMapper _automapper;
     private readonly HttpClient _httpClient;
     private readonly string _csvDownloadUrl = 
         "https://www.aviationweather.gov/adds/dataserver_current/current/metars.cache.csv.gz";
 
-    public AviationWeatherCsvMetarProvider(IHttpClientFactory httpClientFactory)
+    public AviationWeatherCsvMetarProvider(IHttpClientFactory httpClientFactory, IMapper automapper)
     {
+        _automapper = automapper;
         _httpClient = httpClientFactory.CreateClient();
     }
 
     public async Task<IList<Metar>> RetrieveMetars()
     {
         await using Stream csvStream = await DownloadCsvAsStream();
-        return ParseMetarsFromCsv(csvStream);
+        IList<AviationWeatherCsvMetar> metars = ParseMetarsFromCsv(csvStream);
+
+        return _automapper.Map<IList<Metar>>(metars);
     }
 
     private async Task<Stream> DownloadCsvAsStream()
@@ -29,7 +34,7 @@ public class AviationWeatherCsvMetarProvider : IMetarProvider
         return new GZipStream(response, CompressionMode.Decompress);
     }
 
-    private IList<Metar> ParseMetarsFromCsv(Stream csvStream)
+    private IList<AviationWeatherCsvMetar> ParseMetarsFromCsv(Stream csvStream)
     {
         using StreamReader csvStreamReader = new StreamReader(csvStream);
         using var csv = new CsvReader(csvStreamReader, CultureInfo.InvariantCulture);
@@ -42,7 +47,7 @@ public class AviationWeatherCsvMetarProvider : IMetarProvider
         csv.ReadHeader();
 
         return csv
-            .GetRecords<Metar>()
+            .GetRecords<AviationWeatherCsvMetar>()
             .ToList();
     }
 }

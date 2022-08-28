@@ -1,12 +1,9 @@
-﻿namespace BadWeather.Domain.Models;
+﻿namespace BadWeather.Application.Responses;
 
-public class Metar
+public class MetarResponse
 {
-    public Guid Id { get; set; }
-
-    public string Text { get; init; } = null!;
-    public string StationIcao { get; init; } = null!;
-    public string? ObservationTime { get; set; }
+    public string StationIcao { get; set; } = null!;
+    public string Text { get; set; } = null!;
     public double WindDirectionDegrees { get; init; }
     public double WindSpeedKnots { get; init; }
     public double WindGustKnots { get; init; }
@@ -15,5 +12,5 @@ public class Metar
     public string? FlightCategory { get; init; }
     public double? TempC { get; init; }
     public double? DewpointC { get; init; }
-    public List<string?> SkyCover { get; set; } = new ();
+    public List<string> SkyCover { get; set; } = new ();
 }

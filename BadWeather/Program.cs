@@ -2,8 +2,7 @@ using System.Reflection;
 using BadWeather.Application.Contracts;
 using BadWeather.Application.Services;
 using BadWeather.Infrastructure;
-using BadWeather.Infrastructure.Metars;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
+using BadWeather.Infrastructure.Metars.AviationWeather;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
