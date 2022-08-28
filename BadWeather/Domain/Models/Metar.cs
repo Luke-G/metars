@@ -2,6 +2,8 @@
 
 public class Metar
 {
+    public Guid Id { get; set; }
+
     public string Text { get; init; } = null!;
     public string StationIcao { get; init; } = null!;
     public string? ObservationTime { get; set; }
