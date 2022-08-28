@@ -1,6 +1,8 @@
 using System.Net;
+using AutoMapper;
+using BadWeather.Application.Mappings;
 using BadWeather.Domain.Models;
-using BadWeather.Infrastructure.Metars;
+using BadWeather.Infrastructure.Metars.AviationWeather;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
@@ -31,7 +33,14 @@ public class AviationWeatherCsvMetarProviderUnitTests
         var client = new HttpClient(mockHttpMessageHandler.Object);
         mockHttpClientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
         
-        _sut = new AviationWeatherCsvMetarProvider(mockHttpClientFactory.Object);
+        var autoMapperConfig = new MapperConfiguration(config =>
+        {
+            config.AddProfile<MetarProfile>();
+        });
+
+        var automapper = new Mapper(autoMapperConfig);
+        
+        _sut = new AviationWeatherCsvMetarProvider(mockHttpClientFactory.Object, automapper);
     }
 
     [Fact]

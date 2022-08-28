@@ -1,5 +1,8 @@
-﻿using BadWeather.Api.Controllers;
+﻿using AutoMapper;
+using BadWeather.Api.Controllers;
 using BadWeather.Application.Contracts;
+using BadWeather.Application.Mappings;
+using BadWeather.Application.Responses;
 using BadWeather.Application.Services;
 using BadWeather.Domain.Models;
 using BadWeather.Tests.Mocks;
@@ -19,16 +22,23 @@ public class MetarsControllerUnitTests
     {
         var mockMetarProvider = new MockMetarProvider();
         var metarService = new MetarService(mockMetarProvider.Object);
+        
+        var autoMapperConfig = new MapperConfiguration(config =>
+        {
+            config.AddProfile<MetarProfile>();
+        });
 
-        _sut = new MetarsController(metarService);
+        var automapper = new Mapper(autoMapperConfig);
+
+        _sut = new MetarsController(metarService, automapper);
     }
 
     [Fact]
     public async Task CanGetTopGustsInOrder()
     {
-        ActionResult<List<Metar>> contentResult = await _sut.GetTop20Gusts("Y");
+        ActionResult<List<MetarResponse>> contentResult = await _sut.GetTop20Gusts("Y");
         
-        var metars = (IEnumerable<Metar>)((OkObjectResult)contentResult.Result!).Value!;
+        var metars = (IEnumerable<MetarResponse>)((OkObjectResult)contentResult.Result!).Value!;
         metars = metars.ToList();
 
         metars.First().StationIcao.Should().Be("YMEN");
