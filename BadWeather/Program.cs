@@ -3,6 +3,8 @@ using BadWeather.Application.Contracts;
 using BadWeather.Application.Services;
 using BadWeather.Infrastructure;
 using BadWeather.Infrastructure.Metars;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddPersistence(builder.Configuration);
+
+builder.Services.AddStackExchangeRedisCache(opt =>
+{
+    opt.ConfigurationOptions = new ConfigurationOptions
+    {
+        EndPoints = { builder.Configuration.GetConnectionString("Redis") }
+    };
+});
+
 builder.Services.AddScoped<IMetarProvider, AviationWeatherCsvMetarProvider>();
 builder.Services.AddScoped<IMetarImportService, MetarImportService>();
 builder.Services.AddScoped<IMetarService, MetarService>();
