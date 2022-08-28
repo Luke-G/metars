@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.IO.Compression;
-using AutoMapper;
 using BadWeather.Application.Contracts;
 using CsvHelper;
 using BadWeather.Domain.Models;
