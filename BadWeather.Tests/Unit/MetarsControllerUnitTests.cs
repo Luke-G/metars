@@ -17,11 +17,7 @@ public class MetarsControllerUnitTests
     public MetarsControllerUnitTests()
     {
         var mockLogger = new Mock<ILogger<MetarsController>>();
-        var mockMetarProvider = new Mock<IMetarProvider>();
-
-        mockMetarProvider
-            .Setup(m => m.RetrieveMetars())
-            .ReturnsAsync(MockMetarProvider.GetMockMetars());
+        var mockMetarProvider = new MockMetarProvider();
 
         _sut = new MetarsController(mockLogger.Object, mockMetarProvider.Object);
     }

@@ -1,13 +1,20 @@
 ﻿using BadWeather.Application.Contracts;
 using BadWeather.Domain.Models;
+using Moq;
 
 namespace BadWeather.Tests.Mocks;
 
-public class MockMetarProvider : IMetarProvider
+public class MockMetarProvider : Mock<IMetarProvider>, IMetarProvider
 {
-    public static IList<Metar> GetMockMetars()
+    public MockMetarProvider()
     {
-        return new List<Metar>
+        Setup(m => m.RetrieveMetars())
+            .ReturnsAsync(RetrieveMetars().Result);
+    }
+
+    public Task<IList<Metar>> RetrieveMetars()
+    {
+        IList<Metar> metars = new List<Metar>
         {
             new Metar
             {
@@ -30,10 +37,7 @@ public class MockMetarProvider : IMetarProvider
                 WindGustKnots = 2,
             }
         };
-    }
 
-    public Task<IList<Metar>> RetrieveMetars()
-    {
-        return Task.FromResult(GetMockMetars());
+        return Task.FromResult(metars);
     }
 }
