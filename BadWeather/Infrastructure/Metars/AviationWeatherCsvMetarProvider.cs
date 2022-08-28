@@ -9,25 +9,19 @@ namespace BadWeather.Infrastructure.Metars;
 
 public class AviationWeatherCsvMetarProvider : IMetarProvider
 {
-    private readonly IMapper _automapper;
     private readonly HttpClient _httpClient;
     private readonly string _csvDownloadUrl = 
         "https://www.aviationweather.gov/adds/dataserver_current/current/metars.cache.csv.gz";
 
-    public AviationWeatherCsvMetarProvider(
-        IHttpClientFactory httpClientFactory,
-        IMapper automapper)
+    public AviationWeatherCsvMetarProvider(IHttpClientFactory httpClientFactory)
     {
-        _automapper = automapper;
         _httpClient = httpClientFactory.CreateClient();
     }
 
     public async Task<IList<Metar>> RetrieveMetars()
     {
         await using Stream csvStream = await DownloadCsvAsStream();
-        IList<AviationWeatherCsvMetar> metars = ParseMetarsFromCsv(csvStream);
-
-        return _automapper.Map<List<Metar>>(metars);
+        return ParseMetarsFromCsv(csvStream);
     }
 
     private async Task<Stream> DownloadCsvAsStream()
@@ -36,10 +30,11 @@ public class AviationWeatherCsvMetarProvider : IMetarProvider
         return new GZipStream(response, CompressionMode.Decompress);
     }
 
-    private IList<AviationWeatherCsvMetar> ParseMetarsFromCsv(Stream csvStream)
+    private IList<Metar> ParseMetarsFromCsv(Stream csvStream)
     {
         using StreamReader csvStreamReader = new StreamReader(csvStream);
         using var csv = new CsvReader(csvStreamReader, CultureInfo.InvariantCulture);
+        csv.Context.RegisterClassMap<MetarCsvClassMap>();
 
         // Skip to the header index at row 6.
         for (var i = 0; i < 6; i++)
@@ -48,7 +43,7 @@ public class AviationWeatherCsvMetarProvider : IMetarProvider
         csv.ReadHeader();
 
         return csv
-            .GetRecords<AviationWeatherCsvMetar>()
+            .GetRecords<Metar>()
             .ToList();
     }
 }
