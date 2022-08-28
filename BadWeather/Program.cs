@@ -1,7 +1,6 @@
 using System.Reflection;
 using BadWeather.Application.Contracts;
-using BadWeather.Application.Services;
-using Microsoft.Extensions.DependencyInjection;
+using BadWeather.Infrastructure.Metars;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +10,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMetarProvider, AviationWeatherCsvMetarProvider>();
-builder.Services.AddScoped<GzipCompressor>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());

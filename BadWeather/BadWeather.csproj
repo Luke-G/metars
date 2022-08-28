@@ -16,7 +16,7 @@
 
     <ItemGroup>
       <Folder Include="Api" />
-      <Folder Include="Infrastructure" />
+      <Folder Include="Application\Services" />
     </ItemGroup>
 
 </Project>

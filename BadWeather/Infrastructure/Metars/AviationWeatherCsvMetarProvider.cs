@@ -1,14 +1,14 @@
 ﻿using System.Globalization;
+using System.IO.Compression;
 using AutoMapper;
 using BadWeather.Application.Contracts;
 using CsvHelper;
 using BadWeather.Domain.Models;
 
-namespace BadWeather.Application.Services;
+namespace BadWeather.Infrastructure.Metars;
 
 public class AviationWeatherCsvMetarProvider : IMetarProvider
 {
-    private readonly GzipCompressor _gzipCompressor;
     private readonly IMapper _automapper;
     private readonly HttpClient _httpClient;
     private readonly string _csvDownloadUrl = 
@@ -16,18 +16,16 @@ public class AviationWeatherCsvMetarProvider : IMetarProvider
 
     public AviationWeatherCsvMetarProvider(
         IHttpClientFactory httpClientFactory,
-        GzipCompressor gzipCompressor,
         IMapper automapper)
     {
-        _gzipCompressor = gzipCompressor;
         _automapper = automapper;
         _httpClient = httpClientFactory.CreateClient();
     }
 
     public async Task<IList<Metar>> RetrieveMetars()
     {
-        Stream csvStream = await DownloadCsvAsStream();
-        IList<AviationWeatherCsvMetar> metars = ParseCsvToMetars(csvStream);
+        await using Stream csvStream = await DownloadCsvAsStream();
+        IList<AviationWeatherCsvMetar> metars = ParseMetarsFromCsv(csvStream);
 
         return _automapper.Map<List<Metar>>(metars);
     }
@@ -35,10 +33,10 @@ public class AviationWeatherCsvMetarProvider : IMetarProvider
     private async Task<Stream> DownloadCsvAsStream()
     {
         Stream response = await _httpClient.GetStreamAsync(_csvDownloadUrl);
-        return  _gzipCompressor.DecompressStream(response);
+        return new GZipStream(response, CompressionMode.Decompress);
     }
 
-    private IList<AviationWeatherCsvMetar> ParseCsvToMetars(Stream csvStream)
+    private IList<AviationWeatherCsvMetar> ParseMetarsFromCsv(Stream csvStream)
     {
         using StreamReader csvStreamReader = new StreamReader(csvStream);
         using var csv = new CsvReader(csvStreamReader, CultureInfo.InvariantCulture);
