@@ -8,12 +8,10 @@ namespace BadWeather.Api.Controllers;
 [Route("metars")]
 public class MetarsController : ControllerBase
 {
-    private readonly ILogger<MetarsController> _logger;
     private readonly IMetarProvider _metarProvider;
 
-    public MetarsController(ILogger<MetarsController> logger, IMetarProvider metarProvider)
+    public MetarsController(IMetarProvider metarProvider)
     {
-        _logger = logger;
         _metarProvider = metarProvider;
     }
 

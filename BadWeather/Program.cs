@@ -1,5 +1,6 @@
 using System.Reflection;
 using BadWeather.Application.Contracts;
+using BadWeather.Application.Services;
 using BadWeather.Infrastructure;
 using BadWeather.Infrastructure.Metars;
 
@@ -12,6 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddScoped<IMetarProvider, AviationWeatherCsvMetarProvider>();
+builder.Services.AddScoped<IMetarImportService, MetarImportService>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
