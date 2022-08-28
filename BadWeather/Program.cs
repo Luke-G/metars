@@ -1,8 +1,7 @@
 using System.Reflection;
 using BadWeather.Application.Contracts;
-using BadWeather.Infrastructure.Database;
+using BadWeather.Infrastructure;
 using BadWeather.Infrastructure.Metars;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContextPool<ApplicationDbContext>(
-    o => o.UseNpgsql(builder.Configuration.GetConnectionString("ApplicationDbContext")));
-
+builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddScoped<IMetarProvider, AviationWeatherCsvMetarProvider>();
 
 builder.Services.AddHttpClient();

@@ -7,11 +7,14 @@ public class ApplicationDbContext : DbContext
 {
     public DbSet<Metar> Metars { get; set; } = null!;
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=54322;Database=badweather;Username=postgres;Password=secret;");
-    
+    public ApplicationDbContext(DbContextOptions options) 
+        : base(options)
+    {
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MetarEntityTypeConfiguration).Assembly);
     }
 }
