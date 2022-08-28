@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BadWeather.Api.Controllers;
 
 [ApiController]
-[Route("metars")]
+[Route("Api")]
 public class MetarsController : ControllerBase
 {
     private readonly IMetarService _metarService;
@@ -20,8 +20,8 @@ public class MetarsController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("gust")]
-    public async Task<ActionResult<List<MetarResponse>>> GetTop20Gusts([FromQuery] string icaoPrefix)
+    [HttpGet("Gusts")]
+    public async Task<ActionResult<List<MetarResponse>>> GetTop20Gusts([FromQuery] string? icaoPrefix)
     {
         IEnumerable<Metar> metars = await _metarService.GetHighestGusts();
 
@@ -32,8 +32,8 @@ public class MetarsController : ControllerBase
         return Ok(_mapper.Map<List<MetarResponse>>(result));
     }
     
-    [HttpGet("wind")]
-    public async Task<ActionResult<List<MetarResponse>>> GetTop20Wind([FromQuery] string icaoPrefix)
+    [HttpGet("Wind")]
+    public async Task<ActionResult<List<MetarResponse>>> GetTop20Wind([FromQuery] string? icaoPrefix)
     {
         IEnumerable<Metar> metars = await _metarService.GetHighestWinds();
 
@@ -44,8 +44,8 @@ public class MetarsController : ControllerBase
         return Ok(_mapper.Map<List<MetarResponse>>(result));
     }
     
-    [HttpGet("lowvisibility")]
-    public async Task<ActionResult<List<MetarResponse>>> GetTop20LowVisibility([FromQuery] string icaoPrefix)
+    [HttpGet("LowVisibility")]
+    public async Task<ActionResult<List<MetarResponse>>> GetTop20LowVisibility([FromQuery] string? icaoPrefix)
     {
         IEnumerable<Metar> metars = await _metarService.GetLowestVisibility();
 
@@ -56,8 +56,8 @@ public class MetarsController : ControllerBase
         return Ok(_mapper.Map<List<MetarResponse>>(result));
     }
     
-    [HttpGet("storms")]
-    public async Task<ActionResult<List<MetarResponse>>> GetTop20Storms([FromQuery] string icaoPrefix)
+    [HttpGet("Storms")]
+    public async Task<ActionResult<List<MetarResponse>>> GetTop20Storms([FromQuery] string? icaoPrefix)
     {
         IEnumerable<Metar> metars = await _metarService.GetStorms();
 
