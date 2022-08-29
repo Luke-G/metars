@@ -1,6 +1,65 @@
 ﻿@page "/"
+@using Metars.Client.Models.Responses
 @inject HttpClient Http
 
 <PageTitle>METARs</PageTitle>
 
-<h1>METARs</h1>
+<h1>Bad Weather</h1>
+
+<ul>
+    @foreach ((string category, IList<MetarResponse> metars) in categorisedMetars)
+    {
+        <h2>@category</h2>
+        
+        <table class="table table-striped" style="max-width: 50vw;">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">ICAO</th>
+                <th scope="col">METAR</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var metar in metars)
+            {
+                <tr>
+                    <th scope="row">@metar.StationIcao</th>
+                    <td>@metar.Text</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        
+        <hr />
+    }
+</ul>
+
+@code {
+    private Dictionary<string, IList<MetarResponse>> categorisedMetars = new();
+    private bool shouldRender;
+
+    protected override bool ShouldRender() => shouldRender;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var urlPaths = new List<string>
+        {
+            "Gusts", "Wind", "LowVisibility", "Storms"
+        };
+
+        try
+        {
+            foreach (string url in urlPaths)
+            {
+                var requestUrl = string.Concat("Bad/", url);
+                var response = await Http.GetFromJsonAsync<List<MetarResponse>>(requestUrl);
+                categorisedMetars.Add(url, response!);
+            }
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+        }
+
+        shouldRender = true;
+    }
+}
