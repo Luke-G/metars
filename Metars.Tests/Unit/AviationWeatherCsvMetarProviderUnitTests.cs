@@ -1,8 +1,8 @@
 using System.Net;
 using AutoMapper;
-using Metars.Application.Mappings;
-using Metars.Domain.Models;
-using Metars.Infrastructure.Metars.AviationWeather;
+using Metars.Api.Application.Mappings;
+using Metars.Api.Domain.Models;
+using Metars.Api.Infrastructure.Metars.AviationWeather;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;

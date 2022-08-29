@@ -1,5 +1,5 @@
-﻿using Metars.Application.Contracts;
-using Metars.Domain.Models;
+﻿using Metars.Api.Application.Contracts;
+using Metars.Api.Domain.Models;
 using Moq;
 
 namespace Metars.Tests.Mocks;

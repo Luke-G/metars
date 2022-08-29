@@ -1,4 +1,4 @@
-﻿using Metars.Application.Contracts;
+﻿using Metars.Api.Application.Contracts;
 using Metars.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

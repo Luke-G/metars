@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Metars\Metars.csproj" />
+      <ProjectReference Include="..\Metars.Api\Metars.Api.csproj" />
     </ItemGroup>
 
     <ItemGroup>
